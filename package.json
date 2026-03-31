@@ -1,0 +1,15 @@
+{ 
+  "name": "eventstore-projections", 
+  "version": "1.0.0", 
+  "description": "Node.js EventStore projections packaged as NuGet", 
+  "main": "src/projection.js", 
+  "scripts": { "test": "mocha" }, 
+  "author": "Your Name", 
+  "license": "MIT", 
+  "devDependencies": { "mocha": "^10.2.0", "chai": "^4.3.7" },
+  "dependencies": {
+    "event-store-projection-testing-framework": "2023.12.1",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0" 
+  }
+} 
