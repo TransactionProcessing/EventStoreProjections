@@ -356,7 +356,8 @@ module.exports = {
                 "merchantId": merchantId,     
                 "responseCode": '1001',
                 "responseMessage": 'DECLINED',           
-                "transactionId": transactionId
+                "transactionId": transactionId,
+                "isAuthorised": false
             },
             metadata: {
             },

@@ -2,7 +2,7 @@ var testData = require('./TestData.js');
 var helpers = require('./helpers.js');
 testData.clearRequireCache();
 
-require('../../NugetPackage/projections/continuous/MerchantBalanceProjection.js');
+require('../src/continuous/MerchantBalanceProjection.js');
 var projection = require('event-store-projection-testing-framework');
 var chai = require("chai");
 
@@ -482,6 +482,87 @@ describe('Merchant Balance Projection Tests', function () {
         console.log("Done");
     });
 
+    it('should ignore an event with no data', () => {
+        projection.initialize();
+
+        var projectionState = {
+            merchant: {}
+        };
+        
+        projection.setState(projectionState);
+
+        const invalidEvent = { eventType: 'ManualDepositMadeEvent' }; // missing data
+        projection.processEvent(
+                'TransactionAggregate-c4c33d75-f011-40e4-9d97-1f428ab563d8',
+                invalidEvent.eventType,
+                invalidEvent.data); 
+
+        var projectionState = projection.getState();
+        chai.expect(projectionState.merchant.numberOfEventsProcessed).to.be.undefined;
+    });
+
+    it('should ignore an event with no merchantId', () => {
+        projection.initialize();
+
+        var projectionState = {
+            merchant: {}
+        };
+        
+        projection.setState(projectionState);
+        
+        const invalidEvent = { 
+            eventType: 'ManualDepositMadeEvent', 
+            data: { amount: 100, estateId: 'e1' } // missing merchantId
+        };
+        projection.processEvent(
+                'TransactionAggregate-c4c33d75-f011-40e4-9d97-1f428ab563d8',
+                invalidEvent.eventType,
+                invalidEvent.data); 
+
+        var projectionState = projection.getState();
+        chai.expect(projectionState.merchant.numberOfEventsProcessed).to.be.undefined;
+    });
+
+    it('should ignore an event with no estateId', () => {
+        projection.initialize();
+
+        var projectionState = {
+            merchant: {}
+        };
+        
+        projection.setState(projectionState);
+        const invalidEvent = { 
+            eventType: 'ManualDepositMadeEvent', 
+            data: { amount: 100, merchantId: 'm1' } // missing estateId
+        };
+        projection.processEvent(
+                'TransactionAggregate-c4c33d75-f011-40e4-9d97-1f428ab563d8',
+                invalidEvent.eventType,
+                invalidEvent.data); 
+
+        var projectionState = projection.getState();
+        chai.expect(projectionState.merchant.numberOfEventsProcessed).to.be.undefined;
+    });
+
+    it('should ignore system events', () => {
+        projection.initialize();
+
+        var projectionState = {
+            merchant: {}
+        };
+        
+        projection.setState(projectionState);
+        
+        const invalidEvent = { 
+            eventType: '$systemEvent', 
+            data: { amount: 100, merchantId: 'm1', estateId: 'e1' } 
+        };
+        projection.processEvent(
+                'TransactionAggregate-c4c33d75-f011-40e4-9d97-1f428ab563d8',
+                invalidEvent.eventType,
+                invalidEvent.data); 
+
+        var projectionState = projection.getState();
+        chai.expect(projectionState.merchant.numberOfEventsProcessed).to.be.undefined;;
+    });
 });
-
-
