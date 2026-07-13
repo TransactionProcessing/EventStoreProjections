@@ -5,6 +5,10 @@ on:
   - cron: "45 23 * * *"
   repository_dispatch:
 
+
+permissions:
+  contents: read
+  issues: write
 env:
   NODE_VERSION: '14.x'                # set this to the node version to use
 
@@ -24,3 +28,18 @@ jobs:
       run: |
         npm install
         npm run test
+
+    - name: Notify on nightly failure
+      if: ${{ failure() }}
+      uses: TransactionProcessing/org-ci-workflows/.github/actions/nightly-failure-issue@main
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        title: Investigate Nightly Build Failure
+        labels: nightlybuild
+        dedupe_key: nightlybuild
+        body: |
+          Repo: ${{ github.repository }}
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          Commit: ${{ github.sha }}
+          Workflow: ${{ github.workflow }}
+          Job: ${{ github.job }}
