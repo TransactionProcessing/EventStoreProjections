@@ -6,10 +6,10 @@
   "scripts": { "test": "mocha" }, 
   "author": "Your Name", 
   "license": "MIT", 
-  "devDependencies": { "mocha": "^10.2.0", "chai": "^4.3.7" },
+  "devDependencies": { "mocha": "^12.0.1", "chai": "^4.3.7" },
   "dependencies": {
     "event-store-projection-testing-framework": "2023.12.1",
     "chai": "^4.3.10",
-    "mocha": "^10.2.0" 
+    "mocha": "^12.0.1" 
   }
 } 
